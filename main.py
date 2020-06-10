@@ -23,17 +23,23 @@ def test():
 def execute():
     body = request.json
     # Obtener las columnas del body
-    columns = body['columns']
+    # rows = body['rows']
+    # columns = body['columns']
+
+    # cantidad de clusters a ejecutar
+    clusters = body['clusters']
+    # Las dimensiones a evaluar
+    dimensions = body['dimensions']
 
     # Eligiendo las columnas
     filtered_data = []
-    for col in columns:
+    for col in dimensions:
         filtered_data.append(data[col])
 
     # Creando los items
     items = []
-    size = len(data['water'])
-    cols_count = len(columns)
+    size = len(data['name'])
+    cols_count = len(dimensions)
 
     for i in range(size):
         row = []
@@ -44,8 +50,10 @@ def execute():
                 row.append(filtered_data[j][i])
         items.append(row)
 
+    rows = 1
+    cols = clusters
     # Realizar el algoritmo con las columnas elegidas por el usuario?
-    result = som.som(items)
+    result = som.som(data['name'], items, rows, cols)
 
     return jsonify(result)
 

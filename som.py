@@ -12,13 +12,13 @@ def euclidean_distance(a, b):
     return math.sqrt(result)
 
 
-def manhattan_distance(x1, y1, x2, y2):
-    return abs(x1 - x2) + abs(y1 - y1)
+def manhattan_distance(y1, x1, y2, x2):
+    return abs(x1 - x2) + abs(y1 - y2)
 
 
 def nearest_neuron(vector, weights, rows, columns):
     result = (0, 0)
-    minimun_distance = 1.0e20
+    minimun_distance = 1.0e9
 
     for i in range(rows):
         for j in range(columns):
@@ -45,18 +45,18 @@ def test_adjust_weight():
     print(adjust_weight(value, alpha, data))
 
 
-def som(data):
+def som(names, data, rows, cols):
     data_size = len(data)
     data_dimensions = len(data[0])
 
     # Inicializando variables
-    rows = 5 # variable?
-    cols = 5 # variable?
+    # rows = 5  # variable?
+    # cols = 5  # variable?
     dimensions = data_dimensions
-    iterations = 1000 # variable?
+    iterations = 1000  # variable?
 
     max_range = rows + cols
-    learning_rate = 0.5 # variable?
+    learning_rate = 0.5  # variable?
     training_data = data
 
     # Creando las neuronas
@@ -72,14 +72,24 @@ def som(data):
         t = random.randint(0, data_size - 1)
 
         (bmu_row, bmu_col) = nearest_neuron(data[t], weights, rows, cols)
-
         for i in range(rows):
             for j in range(cols):
                 if manhattan_distance(bmu_row, bmu_col, i, j) < current_range:
-                    weights[i][j] = adjust_weight(weights[i][j], current_alpha, data[t])
+                    weights[i][j] = adjust_weight(
+                        weights[i][j], current_alpha, data[t])
 
-    # retornar los datos?
-    return weights
-    # print(weights)
-    # for row in weights:
-    #     print(row)
+    # Clasificando los inputs en los clusters generados
+    # Neurona = [rows][cols][dimension]
+    # Item = [dimension]
+
+    results = [[] for _ in range(rows * cols)]
+    for i, item in enumerate(data):
+        (bmu_row, bmu_col) = nearest_neuron(item, weights, rows, cols)
+        # print(bmu_row, bmu_col)
+        results[bmu_row * cols + bmu_col].append({
+            "name": names[i],
+            # transformar los numeros a flotantes
+            "values": [float(val) for val in item]
+        })
+
+    return {"data": results}
