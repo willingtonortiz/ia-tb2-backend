@@ -1,6 +1,7 @@
 import pandas as pd
 
 
+# Funcion para cargar los datos del dataset
 def load_data():
     print("LOADING_DATA")
 

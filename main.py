@@ -13,12 +13,13 @@ cors = CORS(app)
 
 data = None
 
-
+# Ruta para probar que el servicio este activo
 @app.route("/test")
 def test():
     return jsonify({'hello': 'world'})
 
 
+# Ruta para ejecutar
 @app.route("/execute", methods=['POST'])
 def execute():
     body = request.json
@@ -28,6 +29,7 @@ def execute():
 
     # cantidad de clusters a ejecutar
     clusters = body['clusters']
+
     # Las dimensiones a evaluar
     dimensions = body['dimensions']
 
@@ -41,6 +43,7 @@ def execute():
     size = len(data['name'])
     cols_count = len(dimensions)
 
+    # Colocando el valor por defecto si las celdas no presentan valor
     for i in range(size):
         row = []
         for j in range(cols_count):
@@ -52,7 +55,7 @@ def execute():
 
     rows = 1
     cols = clusters
-    # Realizar el algoritmo con las columnas elegidas por el usuario?
+    # Ejecutar el algoritmo con las columnas elegidas por el usuario?
     result = som.som(data['name'], items, rows, cols)
 
     return jsonify(result)
